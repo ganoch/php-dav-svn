@@ -1,6 +1,7 @@
 # php-dav-svn
 PHP DavSVN Library
 
-[http://svn.apache.org/repos/asf/subversion/trunk/notes/subversion-design.html#protocol]
-[http://svn.apache.org/repos/asf/subversion/trunk/notes/http-and-webdav/webdav-usage.html]
-[https://svn.apache.org/repos/asf/subversion/trunk/notes/http-and-webdav/webdav-protocol]
+References
+<http://svn.apache.org/repos/asf/subversion/trunk/notes/subversion-design.html#protocol>
+<http://svn.apache.org/repos/asf/subversion/trunk/notes/http-and-webdav/webdav-usage.html>
+<https://svn.apache.org/repos/asf/subversion/trunk/notes/http-and-webdav/webdav-protocol>
