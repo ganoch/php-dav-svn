@@ -1,0 +1,16 @@
+{
+    "name": "xand/php-dav-svn",
+    "description": "PHP DavSVN Library",
+    "type": "library",
+    "license": "gnu",
+    "authors": [
+        {
+            "name": "ochoo",
+            "email": "fuximus@yahoo.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "guzzlehttp/guzzle": "~6.0"
+    }
+}
