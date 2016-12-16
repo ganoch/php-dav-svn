@@ -20,6 +20,6 @@ abstract class AbstractSvnRepository{
   public function getPassword(){
     return $this->_pass;
   }
-  abstract public function attemptConnect(); //Throws SvnException
+  abstract public function serverCheck(); //Throws SvnException
   abstract public function logReport($from = 1, $to = 'HEAD', $orderBy='ASC'); //Throws SvnException
 }

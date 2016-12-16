@@ -15,8 +15,8 @@ use GuzzleHttp\Exception\GuzzleException;
 <pre style="margin-left:5px">
 <?php
 try{
-  $svn = new Svn('http://ochoo:odooyaahve@xand.mn/svn/atatek');
-  $svn->attemptConnect();
+  $svn = new Svn('http://xand.mn/svn/atatek');
+  //$svn->attemptConnect();
 
 
   $request = $svn->logReport(1,10);
