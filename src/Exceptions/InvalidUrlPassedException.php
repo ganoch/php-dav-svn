@@ -8,6 +8,7 @@ class InvalidUrlPassedException extends \Exception implements SvnException{
 
   const MALFORMED_URL = 1;
   const UNRECOGNIZED_PROTOCOL = 2;
+  const FAIL_SERVER_CHECK = 3;
   const NO_PROTOCOL = 4;
   const NO_HOST = 8;
   const NO_HOST_OR_PROTOCOL = 12;

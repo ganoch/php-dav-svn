@@ -2,6 +2,7 @@
 namespace PhpDavSvn\Svn;
 
 use PhpDavSvn\Exceptions\SecurityException;
+use PhpDavSvn\Exceptions\InvalidUrlPassedException;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -29,6 +30,8 @@ class SvnDavRepository extends AbstractSvnRepository{
     if(array_key_exists('pass',$params)){
       $this->setPassword($params['pass']);
     }
+
+    $this->serverCheck();
   }
 
   private function prepareParams(){
@@ -36,10 +39,42 @@ class SvnDavRepository extends AbstractSvnRepository{
       $this->_params = ['auth' => [$this->getUsername(), $this->getPassword()]
       ];
     }
+    $this->_params['allow_redirects'] = false;
   }
 
-  public function attemptConnect(){
-    $this->request('GET');
+  public function serverCheck($recursiveDepth = 0){
+    $response = $this->request('GET');
+    if($recursiveDepth > 1){
+      throw new InvalidUrlPassedException('error validating url server response:'.$response->getStatusCode().', expected 200 ', InvalidUrlPassedException::FAIL_SERVER_CHECK);
+    }
+    if($response->getStatusCode()!=200){
+      switch($response->getStatusCode()){
+        case 302:
+          if($response->hasHeader('Location')){
+            $url = $response->getHeader('Location');
+            $params = parse_url($url[0]);
+            $this->_url = rtrim($params['scheme'].'://'.
+              (isset($params['host'])?$params['host']:'').
+              (isset($params['port'])?(':'.$params['port']):'').
+              (isset($params['path'])?($params['path']):''),
+            '/').'/';
+
+            $this->_client = new Client(['base_uri'=>$this->_url
+            ]);
+
+            $this->serverCheck($recursiveDepth+1);
+          }
+        break;
+
+        default:
+          if($recursiveDepth  = 0){
+            throw new InvalidUrlPassedException('server response invalid validating status_code: '.$response->getStatusCode().', url: '.$this->_url, InvalidUrlPassedException::FAIL_SERVER_CHECK);
+          } else {
+            throw new InvalidUrlPassedException('error validating url server', InvalidUrlPassedException::FAIL_SERVER_CHECK);
+          }
+        break;
+      }
+    }
   }
 
   private function request($method='GET', $body = '', $contentType = 'text/plain'){
@@ -81,14 +116,12 @@ class SvnDavRepository extends AbstractSvnRepository{
     if(strlen($body)>0){
       $this->_params['body'] = $body;
     }
-
     $this->_params['headers']['Content-Type'] = $contentType;
 
 
+    echo 'url: '.$this->_url."\n";
     try{
-      $req = $this->_client->createRequest($method,'',$this->_params);
-      print_r($req);
-      $res = $this->_client->send($req);
+      $res = $this->_client->request($method,'',$this->_params);
       print_r($res);
       return $res;
     } catch(ClientException $cl_ex){
